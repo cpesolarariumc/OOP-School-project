@@ -66,7 +66,7 @@ int main() {
     sf::RenderWindow window(sf::VideoMode({ 1280, 700 }), "Flower Growth Simulator", sf::Style::Default);
     window.setFramerateLimit(60);
 
-    // --- START UI BACKGROUND SECTION ---
+    
     sf::Texture menuTex;
     if (!menuTex.loadFromFile("assets/cycle/menu_ui_bg.png")) return -1; 
     sf::Sprite menuBG(menuTex);
@@ -101,7 +101,7 @@ int main() {
     sf::Sprite flower(sunTex); 
     flower.setPosition({ window.getSize().x / 2.0f, window.getSize().y * 0.92f }); // 92% down (base of screen)
 
-    std::vector<Raindrop> rain;
+    std::vector<Raindrop> rain; // 500 raindrops para hindi lag
     for(int i = 0; i < 500; ++i) rain.emplace_back(window.getSize());
 
     State currentState = State::Menu;
@@ -162,7 +162,7 @@ int main() {
             nightBG.setColor(sf::Color(255, 255, 255, static_cast<uint8_t>(nightAlpha)));
 
             weatherCheckTimer += dt;
-            if (weatherCheckTimer >= 60.0f) {
+            if (weatherCheckTimer >= 30.0f) {
                 weatherCheckTimer = 0;
                 currentWeather = (std::rand() % 100 < 40) ? Weather::Rainy : Weather::Sunny;
             }
@@ -176,7 +176,7 @@ int main() {
 
             if (currentStage < 5) {
                 growthTimer += dt * ((currentWeather == Weather::Rainy) ? 2.5f : 1.0f);
-                if (growthTimer >= 45.0f) {
+                if (growthTimer >= 60.0f) {
                     currentStage++; growthTimer = 0.0f;
                     flower.setTexture(stages[currentStage]);
                     flower.setOrigin({ flower.getLocalBounds().size.x / 2.0f, flower.getLocalBounds().size.y });
@@ -196,14 +196,14 @@ int main() {
 
         if (currentState == State::Menu) {
             window.draw(menuBG);
-            // REVERSED: Neon Green base, Dark Green hover
+            
             startButton.setFillColor(startButton.getGlobalBounds().contains(mPos) ? darkGreen : neonGreen);
             window.draw(startButton);
         } 
         else if (currentState == State::Selection) {
             window.draw(menuBG);
             
-            // REVERSED ALL: Bright base, Dark hover
+           
             roseBtn.setFillColor(roseBtn.getGlobalBounds().contains(mPos) ? darkRed : brightRed);
             sunBtn.setFillColor(sunBtn.getGlobalBounds().contains(mPos) ? darkYellow : brightYellow);
             tulipBtn.setFillColor(tulipBtn.getGlobalBounds().contains(mPos) ? rustyOrange : neonOrange);
